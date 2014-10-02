@@ -280,6 +280,13 @@ function getExampleMoves(initialTurnIndex, initialState, arrayOfRowColSets){
 	return exampleMove;	
 }
 
+/*
+	I choose to skip the getRiddle() function in that it's trivial for this specific chinese checker game.
+	The basic strategy is simple: one should make move towards the opponsite corner as much as possible in
+	ervry turn, ie, the more distance you make per turn the faster you reach your goal. This tactic is well
+	embeded in the 70+ turns ExampleGame as below. One can check the corresponding comment to learn necessary
+	information.
+*/
 function getExampleGame(){
 	return getExampleMoves(0, {}, [
 		{oldrow: 6, oldcol: 4, row: 6, col: 5, comment: "First player usually might move a topmost piece one step towards its opposite corner"},
