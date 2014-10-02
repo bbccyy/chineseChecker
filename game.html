@@ -14,11 +14,12 @@
   <script src="http://yoav-zibin.github.io/emulator/platform.js"></script>
   <style>
   	.boxShape {
-    	border : 2px solid #a1a1a1;
+    		border : 2px solid #a1a1a1;
    	 	padding : 10px 10px;
    		width : 17px;
+   		height : 17px;
    		border-radius: 50px;
-    	text-align: center; 
+    		text-align: center; 
 	}
   </style>
 </head>
@@ -28,7 +29,7 @@
   <div style="position:relative; border: 1px solid ;width :625px; height:625px">
   	<div ng-repeat="row in board track by $index">
         <div ng-repeat="cell in row track by $index" ng-click="yo(board.indexOf(row),$index)" ng-style="{'position':'absolute','top':setPagePositionTop(board.indexOf(row), $index), 'left':setPagePosition($index, board.indexOf(row)) }" ng-class="{'boxShape': cell  }" >       
-        	{{ cell }} 
+        	<span ng-hide="cell == 'a'">{{ cell }} </span>
         </div>
     </div>
   </div>
