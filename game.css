@@ -1,0 +1,11 @@
+.boxShape {
+    	border : 2px solid #a1a1a1;
+   	 	padding : 10px 10px;
+   		width : 17px;
+   		height : 17px;
+   		border-radius: 50px;
+    	text-align: center; 
+	}
+.boxGreen {
+		border-color : green;
+	}
