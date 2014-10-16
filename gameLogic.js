@@ -1,6 +1,9 @@
 'use strict';
 
-angular.module('myApp.gameLogic',[]).service('gameLogic',function(){
+angular.module('myApp').service('gameLogic',function(){
+	
+	var chain_1;
+	var chain_2;
 	
 	function isEqual(object1, object2) {
     	return angular.equals(object1, object2);
@@ -53,10 +56,14 @@ function checkPosition(row,col,board){
 function isOneStepMove(oldrow,oldcol,row,col){
 	if( (Math.abs(oldrow-row)+Math.abs(oldcol-col))==1 ){
 		console.log("move is one step around location");
+		chain_1 = {set: {key: 'isChain', value: false}};
+		chain_2 = {set: {key:'chainValue',value: [[oldrow,oldcol],[row,col]]}};
 		return true;
 	}
 	else if( (row==oldrow+1 && col==oldcol+1) || (row==oldrow-1 && col==oldcol-1) ){
 		console.log("move is one step around location");
+		chain_1 = {set: {key: 'isChain', value: false}};
+		chain_2 = {set: {key:'chainValue',value: [[oldrow,oldcol],[row,col]]}};
 		return true;
 	}else{
 		console.log("move takes more steps around location");
@@ -116,20 +123,25 @@ function isContain(arr,value) {
 	return false;
 }
 
-
+// the new version of isMultiStepMoves now can trace 
+// the movements of each step within this multi-jump
+// make sure the history logs jump always with steps
+// greater or equal to two.
 function isMultiStepMoves(oldrow,oldcol,row,col,boardBeforeMove){
 	var key = true;
 	var _row;
 	var _col;
 	var tempPool;
+	var historyPoint;
 	var pointPool = new Array();
-	pointPool[0] = [oldrow,oldcol,true];
+	pointPool[0] = [oldrow,oldcol,true,[[oldrow,oldcol]]];
 	while(true){
 	 	key = false;
 		for(var i=0; i<pointPool.length; i++){
 			if(pointPool[i][2] == true){
 				_row = pointPool[i][0];
 				_col = pointPool[i][1];
+				historyPoint = pointPool[i][3];
 				pointPool[i][2] = false;
 				key = true;
 				break;
@@ -147,17 +159,30 @@ function isMultiStepMoves(oldrow,oldcol,row,col,boardBeforeMove){
 			if(isContain(pointPool,tempPool[j])==true){
 				continue;
 			}
-			pointPool[pointPool.length] = [tempPool[j][0],tempPool[j][1],true];
+			historyPoint.push([tempPool[j][0],tempPool[j][1]]);
+			var tempHistory = JSON.parse(JSON.stringify(historyPoint));
+			pointPool[pointPool.length] = [tempPool[j][0],tempPool[j][1],true,tempHistory];
+			if(tempPool[j][0]==row && tempPool[j][1]==col){
+				console.log(historyPoint);
+				if(historyPoint.length===2){
+					chain_1 = {set: {key: 'isChain', value: false}};
+					chain_2 = {set: {key:'chainValue',value: historyPoint}};
+				}else{
+					chain_1 = {set: {key: 'isChain', value: true}};
+					chain_2 = {set: {key:'chainValue',value: historyPoint}};
+				}
+				return true;
+			}
+			historyPoint.pop();
 		}
-		if(isContain(pointPool,[row,col]) == true){
-			return true;
-		}	
 	}
+	chain_1 = {};
+	chain_2 = {};
 	return false;	
 }
 
 
-function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove,turnIndex){ 
+function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove){ 
 	
 	if(boardBeforeMove === undefined) {
 		boardBeforeMove = [
@@ -202,6 +227,7 @@ function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove,tu
 	var winner = getWinner(boardAfterMove);
 	var firstOperation;
 	var score = [0, 1];
+	var noWinner = false;
 	if(winner !== ''){
 		if(winner === 'O'){
 			score = [1, 0];
@@ -210,23 +236,35 @@ function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove,tu
         
         console.log("player: "+ winner + " WIN!");
 	}else{
-		firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
-		if(turnIndex !== 1 - turnIndexBeforeMove){
-			throw new Error("current Index doesn't match!");
-		}
+		noWinner = true;
+		//firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
 	}
 	
 	if (isOneStepMove(oldrow,oldcol,row,col)===true){
 		console.log("single movement");
+		if(noWinner){
+			firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
+		}
 		return [firstOperation,
             {set: {key: 'board', value: boardAfterMove}},
-            {set: {key: 'delta', value: {oldrow: oldrow, oldcol: oldcol, row: row, col: col}}}];
+            {set: {key: 'delta', value: {oldrow: oldrow, oldcol: oldcol, row: row, col: col}}},
+            chain_1,
+            chain_2];
 	}
-	if(isMultiStepMoves(oldrow,oldcol,row,col,boardBeforeMove)===true){
+	else if(isMultiStepMoves(oldrow,oldcol,row,col,boardBeforeMove)===true){
 		console.log("multiple movements");
+		if(noWinner){
+			if(chain_2.set.value.length===2){
+				firstOperation = {setTurn: {turnIndex: 1-turnIndexBeforeMove}};
+			}else{
+				firstOperation = {setTurn: {turnIndex: 1-turnIndexBeforeMove}};
+			}
+		}
 		return [firstOperation,
             {set: {key: 'board', value: boardAfterMove}},
-            {set: {key: 'delta', value: {oldrow: oldrow, oldcol: oldcol, row: row, col: col}}}];
+            {set: {key: 'delta', value: {oldrow: oldrow, oldcol: oldcol, row: row, col: col}}},
+            chain_1,
+            chain_2];
 	}
 	else{
 		console.log("illegal move!");
@@ -258,35 +296,30 @@ function getInitialBoard() {
 		];
   }
 
+// To show this example Moves through $animate, additional
+// verifications are needed in that problems with turnIndex
 function getExampleMoves(initialTurnIndex, initialState, arrayOfRowColSets){
 	var exampleMove = [];
 	var state = initialState;
 	var turnIndex = initialTurnIndex;
 	for(var i=0; i<arrayOfRowColSets.length; i++){
 		var rowColSets = arrayOfRowColSets[i];
-		var move = createMove(rowColSets.oldrow,rowColSets.oldcol,rowColSets.row, rowColSets.col,turnIndex,state.board,1-turnIndex);
+		var move = createMove(rowColSets.oldrow,rowColSets.oldcol,rowColSets.row, rowColSets.col,turnIndex,state.board);
 		var stateAfterMove = {board : move[1].set.value, delta : move[2].set.value};
 		exampleMove.push({
 			stateBeforeMove: state,
         	stateAfterMove: stateAfterMove,
         	turnIndexBeforeMove: turnIndex,
-        	turnIndexAfterMove: 1 - turnIndex,
+        	//turnIndexAfterMove: 1 - turnIndex,
         	move: move,
         	comment: {en: rowColSets.comment}
 		});
 		state = stateAfterMove;
-		turnIndex = 1 - turnIndex;
+		turnIndex = move[0].setTurn.turnIndex;
 	}
 	return exampleMove;	
 }
 
-/*
-	I choose to skip the getRiddle() function in that it's trivial for this specific chinese checker game.
-	The basic strategy is simple: one should make move towards the opponsite corner as much as possible in
-	ervry turn, ie, the more distance you make per turn the faster you reach your goal. This tactic is well
-	embeded in the 70+ turns ExampleGame as below. One can check the corresponding comment to learn necessary
-	information.
-*/
 function getExampleGame(){
 	return getExampleMoves(0, {}, [
 		{oldrow: 6, oldcol: 4, row: 6, col: 5, comment: "First player usually might move a topmost piece one step towards its opposite corner"},
@@ -361,15 +394,15 @@ function getExampleGame(){
 	]);
 }
 
-
+// The platform will use isMoveOk to check validation
+// Make sure every thing passing to platform is correct
+// For long jump movement, create board and state step
+// by step according to chain value before send to platform
 function isMoveOk(params){
 	try{
 		var move = params.move;
-		var winflag = move[0].endMatch === undefined? false : true;
 		var turnIndexBeforeMove = params.turnIndexBeforeMove; 
-    	var stateBeforeMove = params.stateBeforeMove;
-    	var turnIndex = winflag === false? move[0].setTurn.turnIndex : 1-turnIndexBeforeMove;
-    	
+    	var stateBeforeMove = params.stateBeforeMove;    	
     	var deltaValue = move[2].set.value;
     	var oldrow = deltaValue.oldrow;
       	var oldcol = deltaValue.oldcol;
@@ -378,7 +411,7 @@ function isMoveOk(params){
       	var boardBeforeMove = stateBeforeMove.board;
       	var boardAfterMove = move[1].set.value;
       	
-		var expectedMove = createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove,turnIndex);
+		var expectedMove = createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove);
 		if(!isEqual(move[1], expectedMove[1]) || !isEqual(move[2], expectedMove[2])){
 			return false;
 		}
@@ -387,14 +420,54 @@ function isMoveOk(params){
 	}
 	return true;
   }
+  
+  /**
+   * Returns the move that the computer player should do for the given board.
+   * The computer will play in a random empty cell in the board.
+   */
+  function createComputerMove(board, turnIndexBeforeMove) {
+      var possibleMoves = [];
+      var i, j;
+      for (i = 1; i < 19; i++) {
+        for (j = 1; j < board[i].length; j++) {
+        	    	
+        	if(board[i][j]==='X'){
+        		var r,c;
+        		var dist = 0;
+        		var tempD,tempMove;
+        		 for (r = 1; r < 19; r++) {
+        			for (c = 1; c < board[i].length; c++) {
+        				try{
+        					tempMove = createMove(i,j,r,c,turnIndexBeforeMove,board);
+        					tempD = (Math.abs(r-i)+Math.abs(c-j))*0.4 + (Math.abs(r-5)+Math.abs(c-1))*0.5 + (Math.abs(i-5)+Math.abs(j-1))*0.1;
+        					if(dist === 0){
+        						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
+        					}
+        					if(dist > tempD){
+        						dist = tempD;   // Math value will not change but obj does when passing values
+        						possibleMoves.pop();
+        						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
+        					}
+        				}catch(e){
+        					// illegal move yo~
+        				}
+        			}
+        		}	
+        	}
+        }
+      }
+      var randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+      return randomMove.move;
+  }
     
 //return isMoveOk;
 //return {isMoveOk: isMoveOk, getExampleGame: getExampleGame};
 
 	this.getInitialBoard = getInitialBoard;
  	this.createMove = createMove;
-  this.isMoveOk = isMoveOk;
-  this.getExampleGame = getExampleGame;
+  	this.isMoveOk = isMoveOk;
+  	this.getExampleGame = getExampleGame;
+  	this.createComputerMove = createComputerMove;
 
 });
 
