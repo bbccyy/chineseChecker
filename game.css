@@ -1,11 +1,574 @@
+body {
+  background: #FCFAF2;
+}
+
 .boxShape {
-    	border : 2px solid #a1a1a1;
-   	 	padding : 10px 10px;
-   		width : 17px;
-   		height : 17px;
+    	border : 0.1px solid #a1a1a1;
+   	 	padding : 5px 5px;
+   		width : 15px;
+   		height : 15px;
    		border-radius: 50px;
+   		opacity: 1;
     	text-align: center; 
 	}
 .boxGreen {
+		border : 2px solid;
 		border-color : green;
+		opacity: 1;
 	}
+	
+.checkerShapeX {
+    width : 17px;
+    height : 17px;
+    border-radius: 50px;
+    background: blue;
+    border : 2px solid ;
+    z-index: 5;
+    opacity: 1;
+    margin-left: auto;
+    margin-right:auto;
+    margin-top:auto;
+    margin-bottom:auto;
+}
+.checkerShapeO {
+    width : 17px;
+    height : 17px;
+    border-radius: 50px;
+    background: red;
+    border : 2px solid ;
+    z-index: 5;
+    opacity: 1;
+    margin-left: auto;
+    margin-right:auto;
+    margin-top:auto;
+    margin-bottom:auto;
+}
+
+
+#board {
+  width: 100%;
+}
+
+#title {
+  font-family: 'Cinzel', serif;
+}
+
+#button_panel, #current_player_id {
+  font-family: 'Raleway', sans-serif;
+}
+
+.background_image {
+  max-width: 100%;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+}
+
+.isEmpty, .isGreenMan, .isRedMan {
+  max-width: 100%;
+  position: absolute;
+  z-index: 20;
+  filter: brightness(100%);
+  -webkit-filter: brightness(100%);
+}
+
+.canSelect:hover {
+  filter: brightness(125%);
+  -webkit-filter: brightness(125%);
+}
+
+.jumped {
+  z-index: 25;  /* the jumping one show above */
+}
+
+/****************************************
+Animation
+****************************************/
+
+.move_up_left {
+  -webkit-animation: move_up_left 0.4s linear forwards;
+  animation: move_up_left 0.4s linear forwards;
+}
+
+.move_up_right {
+  -webkit-animation: move_up_right 0.4s linear forwards;
+  animation: move_up_right 0.4s linear forwards;
+}
+
+.move_left {
+  -webkit-animation: move_left 0.4s linear forwards;
+  animation: move_up_left 0.4s linear forwards;
+}
+
+.move_right {
+  -webkit-animation: move_right 0.4s linear forwards;
+  animation: move_up_right 0.4s linear forwards;
+}
+
+.move_down_left {
+  -webkit-animation: move_down_left 0.4s linear forwards;
+  animation: move_down_left 0.4s linear forwards;
+}
+
+.move_down_right {
+  -webkit-animation: move_down_right 0.4s linear forwards;
+  animation: move_down_right 0.4s linear forwards;
+}
+
+.jump_up_left {
+  -webkit-animation: jump_up_left 0.4s linear forwards;
+  animation: jump_up_left 0.4s linear forwards;
+}
+
+.jump_up_right {
+  -webkit-animation: jump_up_right 0.4s linear forwards;
+  animation: jump_up_right 0.4s linear forwards;
+}
+
+.jump_left {
+  -webkit-animation: jump_left 0.4s linear forwards;
+  animation: jump_up_left 0.4s linear forwards;
+}
+
+.jump_right {
+  -webkit-animation: jump_right 0.4s linear forwards;
+  animation: jump_up_right 0.4s linear forwards;
+}
+
+.jump_down_left {
+  -webkit-animation: jump_down_left 0.4s linear forwards;
+  animation: jump_down_left 0.4s linear forwards;
+}
+
+.jump_down_right {
+  -webkit-animation: jump_down_right 0.4s linear forwards;
+  animation: jump_down_right 0.4s linear forwards;
+}
+
+/****************************************
+Simple move key frames
+****************************************/
+
+/*move up left*/
+@-webkit-keyframes move_up_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    /*max-width: 140%;*/
+    top: -85%;
+    left: -50%
+  }
+  100% {
+    /*max-width: 100%;*/
+    top: -170%;
+    left: -100%
+  }
+}
+/*move up left*/
+@keyframes move_up_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -85%;
+    left: -50%
+  }
+  100% {
+    
+    top: -170%;
+    left: -100%
+  }
+}
+
+/*move up right*/
+@-webkit-keyframes move_up_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -85%;
+    left: 50%
+  }
+  100% {
+    
+    top: -170%;
+    left: 100%
+  }
+}
+/*move up right*/
+@keyframes move_up_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -85%;
+    left: 50%
+  }
+  100% {
+    
+    top: -170%;
+    left: 100%
+  }
+}
+
+/*move left*/
+@-webkit-keyframes move_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    /*max-width: 140%;*/
+    top: 0%;
+    left: -50%
+  }
+  100% {
+    /*max-width: 100%;*/
+    top: 0%;
+    left: -100%
+  }
+}
+/*move left*/
+@keyframes move_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: -50%
+  }
+  100% {
+    
+    top: 0%;
+    left: -100%
+  }
+}
+
+/*move right*/
+@-webkit-keyframes move_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: 50%
+  }
+  100% {
+    
+    top: 0%;
+    left: 100%
+  }
+}
+/*move right*/
+@keyframes move_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: 50%
+  }
+  100% {
+    
+    top: 0%;
+    left: 100%
+  }
+}
+
+/*move down left*/
+@-webkit-keyframes move_down_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 85%;
+    left: -50%
+  }
+  100% {
+    
+    top: 170%;
+    left: -100%
+  }
+}
+/*move down left*/
+@keyframes move_down_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 85%;
+    left: -50%
+  }
+  100% {
+    
+    top: 170%;
+    left: -100%
+  }
+}
+
+/*move down right*/
+@-webkit-keyframes move_down_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+   
+    top: 85%;
+    left: 50%
+  }
+  100% {
+    
+    top: 170%;
+    left: 100%
+  }
+}
+/*move down right*/
+@keyframes move_down_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 85%;
+    left: 50%
+  }
+  100% {
+    
+    top: 170%;
+    left: 100%
+  }
+}
+
+/****************************************
+Jump move key frames
+****************************************/
+
+/*move up left*/
+@-webkit-keyframes jump_up_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -170%;
+    left: -100%
+  }
+  100% {
+    
+    top: -340%;
+    left: -200%
+  }
+}
+/*move up left*/
+@keyframes jump_up_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -170%;
+    left: -100%
+  }
+  100% {
+   
+    top: -340%;
+    left: -200%
+  }
+}
+
+/*move up right*/
+@-webkit-keyframes jump_up_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -170%;
+    left: 100%
+  }
+  100% {
+    
+    top: -340%;
+    left: 200%
+  }
+}
+/*move up right*/
+@keyframes jump_up_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: -170%;
+    left: 100%
+  }
+  100% {
+    
+    top: -340%;
+    left: 200%
+  }
+}
+
+/*move left*/
+@-webkit-keyframes jump_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: -100%
+  }
+  100% {
+    
+    top: 0%;
+    left: -200%
+  }
+}
+/*move left*/
+@keyframes jump_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: -100%
+  }
+  100% {
+    
+    top: 0%;
+    left: -200%
+  }
+}
+
+/*move right*/
+@-webkit-keyframes jump_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: 100%
+  }
+  100% {
+    
+    top: 0%;
+    left: 200%
+  }
+}
+/*move right*/
+@keyframes jump_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 0%;
+    left: 100%
+  }
+  100% {
+    
+    top: 0%;
+    left: 200%
+  }
+}
+
+/*move down left*/
+@-webkit-keyframes jump_down_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 170%;
+    left: -100%
+  }
+  100% {
+    
+    top: 340%;
+    left: -200%
+  }
+}
+/*move down left*/
+@keyframes jump_down_left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 170%;
+    left: -100%
+  }
+  100% {
+    
+    top: 340%;
+    left: -200%
+  }
+}
+
+/*move down right*/
+@-webkit-keyframes jump_down_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 170%;
+    left: 100%
+  }
+  100% {
+    
+    top: 340%;
+    left: 200%
+  }
+}
+/*move down right*/
+@keyframes jump_down_right {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  50% {
+    
+    top: 170%;
+    left: 100%
+  }
+  100% {
+    
+    top: 340%;
+    left: 200%
+  }
+}
