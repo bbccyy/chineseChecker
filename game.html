@@ -1,72 +1,65 @@
-<!DOCTYPE html> 
-<html lang="en" ng-app="myApp">
+<!DOCTYPE html>
+<html manifest="game.appcache" lang="en" ng-app="myApp">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Chinese Checker</title>
   <meta name="description" content="Chinese Checker game">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="components/angular/angular.js"></script>
+  <!--<script src="components/angular/angular.js"></script>-->
+  <!--<script src="components/angular-touch/angular-touch.js"></script>
+  <script src="components/angular-route/angular-route.js"></script>
+  <script src="components/angular-animate/angular-animate.js"></script>
+  <script src="components/jquery/dist/jquery.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-touch.min.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/scaleBodyService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
+  <!--<script src="stateService.js"></script>-->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-touch.min.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/angular-dragdrop.1.0.8.min.js"></script>
+  <script src="components/angular-animate/angular-animate.js"></script>
   <script src="game.js"></script>
   <script src="gameLogic.js"></script>
-  <script src="messageService.js"></script>
-  <script src="scaleBodyService.js"></script>
-  <!-- for local testing purposes ! -->
+  <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/scaleBodyService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
+  <!--<script src="http://yoav-zibin.github.io/emulator/platform.js"></script>
+  <!--<script src="game.js"></script>
+  <script src="gameLogic.js"></script>
+  <!--<script src="messageService.js"></script>-->
+  <!--<script src="scaleBodyService.js"></script>-->
+  
+  <!--for local testing purposes ! -->
   <script src="http://yoav-zibin.github.io/emulator/platform.js"></script>
-  <!--<style>
-  	.boxShape {
-    	border : 2px solid #a1a1a1;
-   	 	padding : 10px 10px;
-   		width : 17px;
-   		height : 17px;
-   		border-radius: 50px;
-    	text-align: center; 
-	}
-	.boxGreen {
-		border-color : green;
-	}
-  </style>-->
 <link rel="stylesheet" type="text/css" href="game.css">
 </head>
 <body ng-controller="Ctrl">
- <!-- <textarea ng-model="jsonState" rows=10 cols=100 readonly></textarea> -->
-  
-  <!--
-  <table border="1">
-    <tr ng-repeat="row in board track by $index" width="15px" height="15px">
-      <td ng-repeat="cell in row track by $index" width="15px" height="15px">
-        {{cell}}
-      </td>
-    </tr>
-  </table>
-  -->
-  
-  <div style="position:relative; border: 1px solid ;width :625px; height:625px">
+ 
+  <img style="position:relative; border: 1px solid ;z-index: -1 ;width :625px; height:625px" src="img/GoodBoard.png">
   	<div ng-repeat="row in board track by $index">
         <div ng-repeat="cell in row track by $index" 
+        data-drop="boolboard[board.indexOf(row)][$index]" 
+        jqyoui-droppable="{onDrop: 'onDropCallback(board.indexOf(row), $index)'}"
         ng-click="cellClicked(board.indexOf(row),$index)" 
         ng-style="{'position':'absolute','top':setPagePositionTop(board.indexOf(row), $index), 'left':setPagePosition($index, board.indexOf(row)) }" 
-        ng-class="{boxShape: cell,boxGreen: oldrow==board.indexOf(row) && oldcol==$index }" >       
-        	<span ng-hide="cell == 'a'">{{ cell }} </span>
+        ng-class="{boxShape: cell,boxGreen: selectedPosition[0][0]==board.indexOf(row) && selectedPosition[0][1]==$index }" >       
+        	<div ng-show="cell=='O'"
+        	data-drag="true"
+        	data-jqyoui-options="{revert: 'invalid'}"
+        	jqyoui-draggable="{onStart: 'onStartCallback($parent.$index, $index)'}"
+        	ng-class="{'checkerShapeO': cell=='O', 'move_up_left' : ul, 'move_up_right': ur }"  ></div> 
+            <div ng-show="cell=='X'" ng-class="{'checkerShapeX': cell=='X'}">	</div>
+
         </div>
     </div>
-  </div>
+  </img>
   
- <!-- <textarea rows=10 cols=100 readonly>
-    All operations in GameApi:
-    [
-      {setTurn: {turnIndex: 1}},
-      {set: {key: "k", value: "v"}},
-      {endMatch: {endMatchScores: [42, -2]}},
-      {set: {key: "k", value: "v", visibleToPlayerIndexes: [0]}},
-      {setVisibility: {key: "k", visibleToPlayerIndexes: null}},
-      {shuffle: {keys: ["k1", "k2"]}},
-      {setRandomInteger: {key: "k", from: 0, to: 6}},
-      {"delete": {key: "k"}}
-    ]
-  </textarea>
-  <textarea ng-model="move" rows=10 cols=55></textarea>
-  <br>
-  <button ng-click="makeMove()">Make move</button> -->
 </body>
 </html>
