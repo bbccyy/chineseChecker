@@ -23,10 +23,10 @@ body {
     height : 17px;
     border-radius: 50px;
     //background: blue;
-    background: -webkit-radial-gradient(blue, blue, black); /* Safari 5.1 to 6.0 */
-    background: -o-radial-gradient(blue, blue, black); /* For Opera 11.6 to 12.0 */
-    background: -moz-radial-gradient(blue, blue, black); /* For Firefox 3.6 to 15 */
-    background: radial-gradient(blue, blue, black); /* Standard syntax (must be last) */
+    background: -webkit-radial-gradient(blue, #0000ef, black); /* Safari 5.1 to 6.0 */
+    background: -o-radial-gradient(blue, #0000ef, black); /* For Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient(blue, #0000ef, black); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(blue, #0000ef, black); /* Standard syntax (must be last) */
     border : 1px solid ;
     z-index: 5;
     opacity: 1;
@@ -40,10 +40,10 @@ body {
     height : 17px;
     border-radius: 50px;
     //background: red;
-    background: -webkit-radial-gradient(red, red, black); /* Safari 5.1 to 6.0 */
-    background: -o-radial-gradient(red, red, black); /* For Opera 11.6 to 12.0 */
-    background: -moz-radial-gradient(red, red, black); /* For Firefox 3.6 to 15 */
-    background: radial-gradient(red, red, black); /* Standard syntax (must be last) */
+    background: -webkit-radial-gradient(red, #df0000, black); /* Safari 5.1 to 6.0 */
+    background: -o-radial-gradient(red, #df0000, black); /* For Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient(red, #df0000, black); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(red, #df0000, black); /* Standard syntax (must be last) */
     border : 1px solid ;
     z-index: 5;
     opacity: 1;
