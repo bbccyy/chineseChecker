@@ -1,19 +1,10 @@
 'use strict';
 
-// TODO: remove stateService before launching the game.
-//var app = angular.module('myApp', ['ngAnimate']);
 
 angular.module('myApp',['ngTouch','ngDragDrop'])
-  .controller('Ctrl', function ($scope, $location, $window, $log, $rootScope, $timeout, 
-       scaleBodyService, gameService, gameLogic) {
+  .controller('Ctrl', function ($scope, $log,  $timeout, $interval,
+       gameService, scaleBodyService,  gameLogic) {
       	
-     //var isLocalTesting = $window.parent === $window;
-     
-	// $scope.yo = function($yindex, $index ) {    
-    //    alert($yindex+ "  " +$index);
-    //}
-    //$animate.removeClass(('#' + 1), 'move_up_right');
-    //$animate;
     var moveAudio = new Audio('audio/move.wav');
     moveAudio.load();
     
@@ -39,16 +30,13 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
 		[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
 		];
 		
-		
 	$scope.newposition = 50;
     $scope.newpositionTop = 50;
     $scope.setPagePosition = function(index, parentIndex) {
-        //$scope.newposition = (((index - 9) * (-0.4471) - (18 - parentIndex - 9) * 0.894) +9) *20 + 'px'; 
         $scope.newposition =  $scope.map[parentIndex][index][0] * 40 - 61 + 'px'
         return $scope.newposition;
     }
     $scope.setPagePositionTop = function(parentIndex, index){
-        //$scope.newpositionTop = (18 - (((index - 9) * 0.894 + (18 - parentIndex - 9) * (-0.4471)) + 9)) *20 + 'px';
         $scope.newpositionTop = $scope.map[parentIndex][index][1] * 35.3 -17 + 'px'
         return $scope.newpositionTop;
     }
@@ -70,12 +58,13 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     }
 
     function updateUI(params) {
-      $scope.jsonState = angular.toJson(params.stateAfterMove, true);
+      $scope.params = params;
       $scope.board = params.stateAfterMove.board;
       if ($scope.board === undefined) {
         $scope.board = gameLogic.getInitialBoard();
       }else{
-      	$timeout(moveAudio.play(),500);
+      	//$timeout(moveAudio.play(),100);
+      	moveAudio.play();
       }
       $scope.isYourTurn = params.turnIndexAfterMove >= 0 && // game is ongoing
         params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
@@ -83,13 +72,14 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
       
       
       if(isChain){
-      	//makeGameMove(true);
-      	$timeout(makeGameMove(true), 500);
+      	makeGameMove(true);
+      	
       }else if ($scope.isYourTurn
           && params.playersInfo[params.yourPlayerIndex].playerId === '') {
+          	
          moveOri = gameLogic.createComputerMove($scope.board, $scope.turnIndex);
-        // Wait 500 milliseconds until animation ends.
-        $timeout(makeGameMove(true), 500);
+         
+         makeGameMove(true);   
       }
       
       
@@ -143,7 +133,6 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     		$scope.ur = true;
     	}
     }
-    
     
     
     function checkDragDrop(row, col){
@@ -227,8 +216,11 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     		chainValue = [];
     		}
     		//setAll();
-    		$timeout(function(){},$rootScope.settings.simulateServerDelayMilliseconds + 500); 	
-    		$timeout(gameService.makeMove(move),500);
+    		//$timeout(function(){},$rootScope.settings.simulateServerDelayMilliseconds + 100); 	
+    		$timeout(function(){
+    			console.log("timeout happens! ");
+    			gameService.makeMove(move);},500);
+    		
     		
     }
     
