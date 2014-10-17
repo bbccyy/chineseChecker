@@ -111,6 +111,9 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     		return;
     	}else{
     		if($scope.board[row][col]==($scope.turnIndex==0 ?'O':'X')){
+    			if(isNotSelectable(row,col)){
+    				return;
+    			}
     			$scope.selectedPosition[0] = [row, col];
     			return;
     		}else{
