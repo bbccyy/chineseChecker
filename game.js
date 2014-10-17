@@ -41,20 +41,23 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
         return $scope.newpositionTop;
     }
     
-    $scope.ul = false;
-    $scope.ur = false;
-    $scope.l = false;
-    $scope.r = false;
-    $scope.dl = false;
-    $scope.dr = false;
     
     function resetAll(){
+    	$scope.ani_point = [];
     	$scope.ul = false;
     	$scope.ur = false;
     	$scope.l = false;
     	$scope.r = false;
     	$scope.dl = false;
     	$scope.dr = false;
+    	
+    	$scope.jul = false;
+    	$scope.jur = false;
+    	$scope.jl = false;
+    	$scope.jr = false;
+    	$scope.jdl = false;
+    	$scope.jdr = false;
+    	
     }
 
     function updateUI(params) {
@@ -63,8 +66,8 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
       if ($scope.board === undefined) {
         $scope.board = gameLogic.getInitialBoard();
       }else{
-      	//$timeout(moveAudio.play(),100);
-      	moveAudio.play();
+      	$timeout(function(){moveAudio.play();},100);
+      	//moveAudio.play();
       }
       $scope.isYourTurn = params.turnIndexAfterMove >= 0 && // game is ongoing
         params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
@@ -124,6 +127,8 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     	var col = move[2].set.value.col;
     	var oldrow = move[2].set.value.oldrow;
     	var oldcol = move[2].set.value.oldcol;
+    	$scope.ani_point[0] = oldrow;
+    	$scope.ani_point[1] = oldcol;
     	if(row==oldrow && col == oldcol+1){
     		// up left
     		$scope.ul = true;
@@ -132,6 +137,47 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     		// up right
     		$scope.ur = true;
     	}
+    	else if(row==oldrow-1 && col == oldcol){
+    		// left
+    		$scope.l = true;
+    	}
+    	else if(row==oldrow+1 && col == oldcol){
+    		// right
+    		$scope.r = true;
+    	}
+    	else if(row==oldrow-1 && col == oldcol-1){
+    		// down left
+    		$scope.dl = true;
+    	}
+    	else if(row==oldrow && col == oldcol-1){
+    		// down right
+    		$scope.dr = true;
+    	}
+    	else if(row==oldrow && col == oldcol+2){
+    		// jump up left
+    		$scope.jul = true;
+    	}
+    	else if(row==oldrow+2 && col == oldcol+2){
+    		// jump up right
+    		$scope.jur = true;
+    	}
+    	else if(row==oldrow-2 && col == oldcol){
+    		// jump left
+    		$scope.jl = true;
+    	}
+    	else if(row==oldrow+2 && col == oldcol){
+    		// jump right
+    		$scope.jr = true;
+    	}
+    	else if(row==oldrow-2 && col == oldcol-2){
+    		// jump down left
+    		$scope.jdl = true;
+    	}
+    	else if(row==oldrow && col == oldcol-2){
+    		// jump down right
+    		$scope.jdr = true;
+    	}
+    		
     }
     
     
@@ -215,8 +261,7 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     		isChain = false;
     		chainValue = [];
     		}
-    		//setAll();
-    		//$timeout(function(){},$rootScope.settings.simulateServerDelayMilliseconds + 100); 	
+    		setAll();	
     		$timeout(function(){
     			console.log("timeout happens! ");
     			gameService.makeMove(move);},500);
