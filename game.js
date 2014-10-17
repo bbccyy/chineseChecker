@@ -286,7 +286,7 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     			chainValue.reverse();	
     		}else{
     		moveOri[3].set.value = false;
-    		move[0].setTurn.turnIndex = 1- $scope.turnIndex;
+    		move[0] = moveOri[0];
     		isChain = false;
     		chainValue = [];
     		}
