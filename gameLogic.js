@@ -439,11 +439,12 @@ function isMoveOk(params){
         			for (c = 1; c < board[i].length; c++) {
         				try{
         					tempMove = createMove(i,j,r,c,turnIndexBeforeMove,board);
-        					tempD = (Math.abs(r-i)+Math.abs(c-j))*0.4 + (Math.abs(r-5)+Math.abs(c-1))*0.5 + (Math.abs(i-5)+Math.abs(j-1))*0.1;
+        					tempD = (Math.abs(r-i)+Math.abs(c-j))*0.2 - (Math.abs(r-5)+Math.abs(c-1))*0.3 + (Math.abs(i-5)+Math.abs(j-1))*0.5;
         					if(dist === 0){
+        						dist = tempD;
         						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
         					}
-        					if(dist > tempD){
+        					if(tempD > dist){
         						dist = tempD;   // Math value will not change but obj does when passing values
         						possibleMoves.pop();
         						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
@@ -457,7 +458,14 @@ function isMoveOk(params){
         }
       }
       var randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-      return randomMove.move;
+      var bestMove = possibleMoves[0];
+      for(i=0; i<possibleMoves.length; i++){
+      	if(bestMove.distance < possibleMoves[i].distance){
+      		bestMove = possibleMoves[i]
+      	}
+      }
+      //return randomMove.move;
+      return bestMove.move;
   }
     
 //return isMoveOk;
