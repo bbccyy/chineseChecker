@@ -267,7 +267,7 @@ function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove){
             chain_2];
 	}
 	else{
-		console.log("illegal move!");
+		//console.log("illegal move!");
 		throw new Error("Illegal move!");
 	} 	
 }
