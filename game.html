@@ -1,43 +1,23 @@
 <!DOCTYPE html>
-<html manifest="game.appcache" lang="en" ng-app="myApp">
+<!--<html manifest="game.appcache" lang="en" ng-app="myApp">-->
+<html lang="en" ng-app="myApp">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Chinese Checker</title>
   <meta name="description" content="Chinese Checker game">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!--<script src="components/angular/angular.js"></script>-->
-  <!--<script src="components/angular-touch/angular-touch.js"></script>
-  <script src="components/angular-route/angular-route.js"></script>
-  <script src="components/angular-animate/angular-animate.js"></script>
-  <script src="components/jquery/dist/jquery.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-touch.min.js"></script>
-  <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
-  <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
-  <script src="http://yoav-zibin.github.io/emulator/scaleBodyService.js"></script>
-  <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
-  <!--<script src="stateService.js"></script>-->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-touch.min.js"></script>
   <script src="angular-dragdrop.min.js"></script>
-  <!--<script src="components/angular-animate/angular-animate.js"></script>-->
   <script src="game.js"></script>
   <script src="gameLogic.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/scaleBodyService.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
-  <!--<script src="http://yoav-zibin.github.io/emulator/platform.js"></script>
-  <!--<script src="game.js"></script>
-  <script src="gameLogic.js"></script>
-  <!--<script src="messageService.js"></script>-->
-  <!--<script src="scaleBodyService.js"></script>-->
-  
-  <!--for local testing purposes ! -->
-  <!--<script src="http://yoav-zibin.github.io/emulator/platform.js"></script>-->
 <link rel="stylesheet" type="text/css" href="game.css">
 </head>
 <body ng-controller="Ctrl">
@@ -56,7 +36,6 @@
         	jqyoui-draggable="{onStart: 'onStartCallback($parent.$index, $index)'}"
         	ng-class="{'checkerShapeO': cell=='O', 'checkerShapeX': cell=='X', 
         	boxGreen: selectedPosition[0][0]==board.indexOf(row) && selectedPosition[0][1]==$index ,
-        	 'jumped':board.indexOf(row)==ani_point[0]&&$index==ani_point[1], 
         	 'move_up_left' :board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&ul,
         	 'move_up_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&ur,
         	 'move_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&r,
@@ -68,7 +47,8 @@
         	 'jump_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jr,
         	 'jump_left': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jl,
         	 'jump_down_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jdr,
-        	 'jump_down_left': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jdl }"  ></div> 
+        	 'jump_down_left': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jdl,
+        	 'jumped':board.indexOf(row)==ani_point[0]&&$index==ani_point[1] }"  ></div> 
            <!-- <div ng-show="cell=='X'" ng-class="{'checkerShapeX': cell=='X'}">	</div>-->
 
         </div>
