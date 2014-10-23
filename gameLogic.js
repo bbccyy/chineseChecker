@@ -45,7 +45,7 @@ function isEqual(object1, object2) {
 
 function checkPosition(row,col,board){
 	if(board[row][col] === '' || board[row][col] === undefined){
-			console.log("The position of row: " + row + "and col: " + col + "has been outside of the board!");
+			//console.log("The position of row: " + row + "and col: " + col + "has been outside of the board!");
 			return false;
 		}else{
 			return true;
