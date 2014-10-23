@@ -425,13 +425,63 @@ function isMoveOk(params){
    * Returns the move that the computer player should do for the given board.
    * The computer will play in a random empty cell in the board.
    */
+  var members = [];
+  var targets = [[[5,4],[6,4],[7,4],[8,4]],
+      			 [[5,3],[6,3],[7,3]],
+      			 [[5,2],[6,2]],
+      			 [[5,1]]
+      			];
+  var tar_row=0;
+  var tar_col=0;
+  
+  function isMember(row,col,members){
+  	var i;
+  	for(i=0; i<members.length; i++){
+  		if(members[i][0]===row && members[i][1]===col){
+  			return true;
+  		}
+  	}
+  	return false;
+  }
+  
+  function getTargets(){  	
+  	var cur_tar_line = targets[targets.length-1];
+  	var tempR = Math.floor(Math.random() * cur_tar_line.length);
+    tar_row = cur_tar_line[tempR][0];
+    tar_col = cur_tar_line[tempR][1];
+  	cur_tar_line.splice(tempR, 1);
+  	if(cur_tar_line.length === 0){
+  		targets.pop();
+  	}
+  	if(targets.length===0){
+  		return false;
+  	}else{
+  		return true;
+  	}
+  }  
+  
   function createComputerMove(board, turnIndexBeforeMove) {
       var possibleMoves = [];
       var i, j;
+      while(1){
+      	if(tar_row===0 && tar_col===0){
+      		getTargets();
+      	}
+      	if(board[tar_row][tar_col] === 'X'){
+      		members.push([tar_row,tar_col]);
+      		tar_row=0;
+      		tar_col=0;
+      	}else{
+      		break;
+      	}
+      }
       for (i = 1; i < 19; i++) {
         for (j = 1; j < board[i].length; j++) {
-        	    	
+        	
         	if(board[i][j]==='X'){
+        		if(isMember(i,j,members)){
+        			continue;
+        		}
         		var r,c;
         		var dist = 0;
         		var tempD,tempMove;
@@ -439,7 +489,7 @@ function isMoveOk(params){
         			for (c = 1; c < board[i].length; c++) {
         				try{
         					tempMove = createMove(i,j,r,c,turnIndexBeforeMove,board);
-        					tempD = (Math.abs(r-i)+Math.abs(c-j))*0.2 - (Math.abs(r-5)+Math.abs(c-1))*0.3 + (Math.abs(i-5)+Math.abs(j-1))*0.5;
+        					tempD = Math.abs(c-j)*0.2 - Math.abs(c-tar_col)*0.5 + Math.abs(j-tar_col)*1.0 - Math.abs(r-tar_row)*0.7;
         					if(dist === 0){
         						dist = tempD;
         						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
@@ -461,8 +511,13 @@ function isMoveOk(params){
       var bestMove = possibleMoves[0];
       for(i=0; i<possibleMoves.length; i++){
       	if(bestMove.distance < possibleMoves[i].distance){
-      		bestMove = possibleMoves[i]
+      		bestMove = possibleMoves[i];
       	}
+      }
+      if(bestMove.value[1][0]===tar_row && bestMove.value[1][1]===tar_col){
+      	members.push([tar_row,tar_col]);
+      	tar_row = 0;
+      	tar_col = 0;
       }
       //return randomMove.move;
       return bestMove.move;
