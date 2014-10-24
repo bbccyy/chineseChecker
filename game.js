@@ -1,9 +1,9 @@
 'use strict';
 
 
-angular.module('myApp',['ngTouch','ngDragDrop'])
-  .controller('Ctrl', function ($scope, $log,  $timeout, $interval,
-       gameService, scaleBodyService,  gameLogic) {
+angular.module('myApp',['ngTouch','ngDraggable'])
+  .controller('Ctrl', function ($window, $scope, $log,  $timeout, $interval,
+       gameService,  gameLogic) {
       	
     var moveAudio = new Audio('audio/move.wav');
     moveAudio.load();
@@ -33,11 +33,11 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
 	$scope.newposition = 50;
     $scope.newpositionTop = 50;
     $scope.setPagePosition = function(index, parentIndex) {
-        $scope.newposition =  $scope.map[parentIndex][index][0] * 40 - 61 + 'px'
+        $scope.newposition =  $scope.map[parentIndex][index][0] * 40.2 - 55 + 'px'
         return $scope.newposition;
     }
     $scope.setPagePositionTop = function(parentIndex, index){
-        $scope.newpositionTop = $scope.map[parentIndex][index][1] * 35.3 -17 + 'px'
+        $scope.newpositionTop = $scope.map[parentIndex][index][1] * 35.6 -11 + 'px'
         return $scope.newpositionTop;
     }
     
@@ -234,16 +234,16 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
     	}
     }
     
-    $scope.onDropCallback = function(r, c ){
-    	var row = arguments[2];
-    	var col = arguments[3];
+    $scope.onDropCallback = function( event, r, c ){
+    	var row = r;
+    	var col = c;
     	$scope.cellClicked(row, col);	
     }
     
-    $scope.onStartCallback = function(r, c ){
+    $scope.onStartCallback = function( event, r, c ){
     	//console.log(row,col);
-    	var row = arguments[2];
-    	var col = arguments[3];
+    	var row = r;
+    	var col = c;
     	$log.info(["drag on cell: ",row, col]);
     	if(!$scope.isYourTurn){
     		return;
@@ -305,12 +305,12 @@ angular.module('myApp',['ngTouch','ngDragDrop'])
       gameDeveloperEmail: "yoav.zibin@gmail.com",
       minNumberOfPlayers: 2,
       maxNumberOfPlayers: 2,
-      //exampleGame: gameLogic.getExampleGame(),
+      exampleGame: gameLogic.getExampleGame,
       //riddles: gameLogic.getRiddles(),
       isMoveOk: gameLogic.isMoveOk,
       updateUI: updateUI
     });
     
-    scaleBodyService.scaleBody({width: 625, height: 625});
+   // scaleBodyService.scaleBody({width: 625, height: 625});
    
   });

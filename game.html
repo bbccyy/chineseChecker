@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<!--<html manifest="game.appcache" lang="en" ng-app="myApp">-->
 <html lang="en" ng-app="myApp">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Chinese Checker</title>
   <meta name="description" content="Chinese Checker game">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/ngDraggable.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-touch.min.js"></script>
-  <script src="angular-dragdrop.min.js"></script>
   <script src="game.js"></script>
   <script src="gameLogic.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
-  <script src="http://yoav-zibin.github.io/emulator/scaleBodyService.js"></script>
   <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
 <link rel="stylesheet" type="text/css" href="game.css">
 </head>
@@ -25,17 +22,16 @@
   <img style="position:relative; border: 1px solid ;z-index: -1 ;width :625px; height:625px" src="img/GoodBoard.png">
   	<div ng-repeat="row in board track by $index">
         <div ng-repeat="cell in row track by $index" 
-        data-drop="boolboard[board.indexOf(row)][$index]" 
-        jqyoui-droppable="{onDrop: 'onDropCallback(board.indexOf(row), $index)'}"
+        ng-drop="true"
+        ng-drop-success="onDropCallback($event,board.indexOf(row), $index)"
         ng-click="cellClicked(board.indexOf(row),$index)" 
         ng-style="{'position':'absolute','top':setPagePositionTop(board.indexOf(row), $index), 'left':setPagePosition($index, board.indexOf(row)) }" 
         ng-class="{boxShape: cell}" >       
         	<div 
-        	data-drag="cell=='O'"
-        	data-jqyoui-options="{revert: 'invalid'}"
-        	jqyoui-draggable="{onStart: 'onStartCallback($parent.$index, $index)'}"
+        	ng-drag="cell=='O'&&turnIndex==0 || cell=='X'&& turnIndex==1"
+        	ng-drag-success="onStartCallback($event,$parent.$index, $index)"
         	ng-class="{'checkerShapeO': cell=='O', 'checkerShapeX': cell=='X', 
-        	boxGreen: selectedPosition[0][0]==board.indexOf(row) && selectedPosition[0][1]==$index ,
+        	boxGreen: selectedPosition[0][0]==board.indexOf(row) && selectedPosition[0][1]==$index , 
         	 'move_up_left' :board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&ul,
         	 'move_up_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&ur,
         	 'move_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&r,
@@ -49,7 +45,6 @@
         	 'jump_down_right': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jdr,
         	 'jump_down_left': board.indexOf(row)==ani_point[0]&&$index==ani_point[1]&&jdl,
         	 'jumped':board.indexOf(row)==ani_point[0]&&$index==ani_point[1] }"  ></div> 
-           <!-- <div ng-show="cell=='X'" ng-class="{'checkerShapeX': cell=='X'}">	</div>-->
 
         </div>
     </div>

@@ -45,7 +45,7 @@ function isEqual(object1, object2) {
 
 function checkPosition(row,col,board){
 	if(board[row][col] === '' || board[row][col] === undefined){
-			//console.log("The position of row: " + row + "and col: " + col + "has been outside of the board!");
+			console.log("The position of row: " + row + "and col: " + col + "has been outside of the board!");
 			return false;
 		}else{
 			return true;
@@ -267,7 +267,7 @@ function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove){
             chain_2];
 	}
 	else{
-		//console.log("illegal move!");
+		console.log("illegal move!");
 		throw new Error("Illegal move!");
 	} 	
 }
@@ -426,6 +426,7 @@ function isMoveOk(params){
    * The computer will play in a random empty cell in the board.
    */
   var members = [];
+  var possibleOutcomes = [];
   var targets = [[[5,4],[6,4],[7,4],[8,4]],
       			 [[5,3],[6,3],[7,3]],
       			 [[5,2],[6,2]],
@@ -433,6 +434,7 @@ function isMoveOk(params){
       			];
   var tar_row=0;
   var tar_col=0;
+  var index = 1;   // look forward 1 steps
   
   function isMember(row,col,members){
   	var i;
@@ -460,10 +462,154 @@ function isMoveOk(params){
   	}
   }  
   
-  function createComputerMove(board, turnIndexBeforeMove) {
-      var possibleMoves = [];
+  function getTargetsIn(myTargets){
+  	var cur_tar_line = myTargets[myTargets.length-1];
+  	var tempR = Math.floor(Math.random() * cur_tar_line.length);
+    var tar_row = cur_tar_line[tempR][0];
+    var tar_col = cur_tar_line[tempR][1];
+  	cur_tar_line.splice(tempR, 1);
+  	if(cur_tar_line.length === 0){
+  		myTargets.pop();
+  	}
+  	if(myTargets.length===0){
+  		return {flag:false, value:[tar_row, tar_col]};
+  	}else{
+  		return {flag:true, value:[tar_row, tar_col]};
+  	}
+  }
+  
+  function thinkThreeSteps(mymove, tar_row, tar_col,targets, member, myboard, index){
+  	  if(targets.length === 0){
+  	  	return {distance: 0};
+  	  }
       var i, j;
+      var row = tar_row;
+      var col = tar_col;
+      var curIndex = index - 1;
+      var myTargets = angular.copy(targets);
+      var myMembers = angular.copy(member);
+      var curboard = angular.copy(myboard);
+      
       while(1){
+      	if(row===0 && col===0){
+      		var results = getTargetsIn(myTargets);
+      		row = results.value[0];
+      		col = results.value[1];
+      	}
+      	if(myboard[row][col] === 'X'){
+      		myMembers.push([row,col]);
+      		row=0;
+      		col=0;
+      	}else{
+      		break;
+      	}
+      }
+      
+      if(curIndex === 0){
+      		var possibleMoves = [];
+	      	for (i = 1; i < 19; i++) {
+	        for (j = 1; j < curboard[i].length; j++) {
+	        	
+	        	if(curboard[i][j]==='X'){
+	        		if(isMember(i,j,myMembers)){
+	        			continue;
+	        		}
+	        		var r,c;
+	        		var dist = 0;
+	        		var tempD,tempMove;
+	        		 for (r = 1; r < 19; r++) {
+	        			for (c = 1; c < curboard[i].length; c++) {
+	        				try{
+	        					tempMove = createMove(i,j,r,c,1,curboard);
+	        					tempD = Math.abs(c-j)*0.2 - Math.abs(c-col)*0.5 + Math.abs(j-col)*1.0 - Math.abs(r-row)*0.7;
+	        					if(dist === 0){
+	        						dist = tempD;
+	        						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
+	        					}
+	        					if(tempD > dist){
+	        						dist = tempD;   // Math value will not change but obj does when passing values
+	        						possibleMoves.pop();
+	        						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
+	        					}
+	        				}catch(e){
+	        					// illegal move yo~
+	        				}
+	        			}
+	        		}	
+	        	}
+	        }
+	      }
+	      //var randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+	      var bestMove = possibleMoves[0];
+	      for(i=0; i<possibleMoves.length; i++){
+	      	if(bestMove.distance < possibleMoves[i].distance){
+	      		bestMove = possibleMoves[i];
+	      	}
+	      }
+	      return bestMove;     	    	
+      	
+      }else{
+      	     	
+      	for (i = 1; i < 19; i++) {
+	        for (j = 1; j < curboard[i].length; j++) {
+	        	if(curboard[i][j]==='X'){
+	        		if(isMember(i,j,myMembers)){
+	        			continue;
+	        		}
+	        		
+	        		var r,c;
+	        		var dist = 0;
+	        		var tempD,tempMove;
+	        		 for (r = 1; r < 19; r++) {
+	        			for (c = 1; c < curboard[i].length; c++) {
+	        				try{
+	        					tempMove = createMove(i,j,r,c,1,curboard);
+	        					tempD = Math.abs(c-j)*0.2 - Math.abs(c-col)*0.5 + Math.abs(j-col)*1.0 - Math.abs(r-row)*0.7;	        					
+	        				}catch(e){
+	        					// illegal move yo~
+	        					tempD = -100;
+	        				}
+	        				if(tempD === -100){
+	        					continue;
+	        				}
+	        				var newboard = angular.copy(curboard);
+	        				newboard[i][j] = 'a';
+	        				newboard[r][c] = 'X';
+	        				if(r===row && c===col){
+	      						var newMembers = angular.copy(myMembers);
+	      						newMembers.push([row, col]);
+	      						var newrow = 0;
+	      						var newcol = 0;
+	     					 }else{
+	     					 	var newMembers = angular.copy(myMembers);
+	      						var newrow = row;
+	      						var newcol = col;
+	     					 }
+	     					 var myNewMove = angular.copy(mymove);
+	     					 if(myNewMove.distance === undefined){
+	     					 	myNewMove = {distance: tempD, value: [[i,j],[r,c]], move: tempMove};
+	     					 }else{
+	     					 	myNewMove.distance += tempD;
+	     					 }
+	     					 var childResult = thinkThreeSteps(myNewMove, newrow, newcol, myTargets, newMembers, newboard, curIndex);
+	        				 if(curIndex === 1){
+	        				 	myNewMove.distance += childResult.distance;
+	        				 	possibleOutcomes.push(myNewMove);
+	        				 }	
+	        				 //return true;        					        					        			
+	        			}
+	        		}
+	        	}	        	
+	        }
+	    }
+
+      }
+      
+  }
+    
+  function createComputerMove(board, turnIndexBeforeMove) {
+  	possibleOutcomes = [];
+  	  while(1){
       	if(tar_row===0 && tar_col===0){
       		getTargets();
       	}
@@ -475,51 +621,23 @@ function isMoveOk(params){
       		break;
       	}
       }
-      for (i = 1; i < 19; i++) {
-        for (j = 1; j < board[i].length; j++) {
-        	
-        	if(board[i][j]==='X'){
-        		if(isMember(i,j,members)){
-        			continue;
-        		}
-        		var r,c;
-        		var dist = 0;
-        		var tempD,tempMove;
-        		 for (r = 1; r < 19; r++) {
-        			for (c = 1; c < board[i].length; c++) {
-        				try{
-        					tempMove = createMove(i,j,r,c,turnIndexBeforeMove,board);
-        					tempD = Math.abs(c-j)*0.2 - Math.abs(c-tar_col)*0.5 + Math.abs(j-tar_col)*1.0 - Math.abs(r-tar_row)*0.7;
-        					if(dist === 0){
-        						dist = tempD;
-        						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
-        					}
-        					if(tempD > dist){
-        						dist = tempD;   // Math value will not change but obj does when passing values
-        						possibleMoves.pop();
-        						possibleMoves.push({distance: dist, value: [[i,j],[r,c]], move: tempMove});
-        					}
-        				}catch(e){
-        					// illegal move yo~
-        				}
-        			}
-        		}	
-        	}
-        }
+      var mymove = {};
+      var bestMove = thinkThreeSteps(mymove, tar_row, tar_col,targets, members, board, index);
+      if(index!=1){
+      	var bestMove = possibleOutcomes[0];
+      	var i;
+		for(i=0; i<possibleOutcomes.length; i++){
+		   if(bestMove.distance < possibleOutcomes[i].distance){
+		     	bestMove = possibleOutcomes[i];
+		   }
+		}
       }
-      var randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-      var bestMove = possibleMoves[0];
-      for(i=0; i<possibleMoves.length; i++){
-      	if(bestMove.distance < possibleMoves[i].distance){
-      		bestMove = possibleMoves[i];
-      	}
-      }
-      if(bestMove.value[1][0]===tar_row && bestMove.value[1][1]===tar_col){
-      	members.push([tar_row,tar_col]);
-      	tar_row = 0;
-      	tar_col = 0;
-      }
-      //return randomMove.move;
+      
+	  if(bestMove.value[1][0] === tar_row && bestMove.value[1][1] === tar_col){
+	  	members.push([tar_row,tar_col]);
+	  	tar_row = 0;
+	  	tar_col = 0;
+	  }
       return bestMove.move;
   }
     

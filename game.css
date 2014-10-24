@@ -22,6 +22,7 @@ body {
     width : 17px;
     height : 17px;
     border-radius: 50px;
+    position: relative;
     //background: blue;
     background: -webkit-radial-gradient(blue, #0000ef, black); /* Safari 5.1 to 6.0 */
     background: -o-radial-gradient(blue, #0000ef, black); /* For Opera 11.6 to 12.0 */
@@ -39,7 +40,7 @@ body {
     width : 17px;
     height : 17px;
     border-radius: 50px;
-    //background: red;
+    position: relative;
     background: -webkit-radial-gradient(red, #df0000, black); /* Safari 5.1 to 6.0 */
     background: -o-radial-gradient(red, #df0000, black); /* For Opera 11.6 to 12.0 */
     background: -moz-radial-gradient(red, #df0000, black); /* For Firefox 3.6 to 15 */
