@@ -73,6 +73,11 @@ angular.module('myApp',['ngTouch','ngDraggable'])
         params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
       $scope.turnIndex = params.turnIndexAfterMove;
       
+      if(params.yourPlayerIndex === -2 ){
+      	//do nothing when initial state holds
+      }else if(!$scope.isYourTurn && params.playersInfo[params.yourPlayerIndex].playerId !== ''){
+      	setAll(params.move);  // show opponent's movement
+      }
       
       if(isChain){
       	makeGameMove(true);
@@ -132,7 +137,7 @@ angular.module('myApp',['ngTouch','ngDraggable'])
     	}
     };
     
-    function setAll(){
+    function setAll(move){
     	resetAll();
     	var row = move[2].set.value.row;
     	var col = move[2].set.value.col;
@@ -293,7 +298,7 @@ angular.module('myApp',['ngTouch','ngDraggable'])
     		isChain = false;
     		chainValue = [];
     		}
-    		setAll();	
+    		setAll(move);	
     		$timeout(function(){
     			console.log("timeout happens! ");
     			gameService.makeMove(move);},500);
