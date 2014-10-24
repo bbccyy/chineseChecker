@@ -305,7 +305,7 @@ angular.module('myApp',['ngTouch','ngDraggable'])
       gameDeveloperEmail: "yoav.zibin@gmail.com",
       minNumberOfPlayers: 2,
       maxNumberOfPlayers: 2,
-      exampleGame: gameLogic.getExampleGame,
+      //exampleGame: gameLogic.getExampleGame,
       //riddles: gameLogic.getRiddles(),
       isMoveOk: gameLogic.isMoveOk,
       updateUI: updateUI
