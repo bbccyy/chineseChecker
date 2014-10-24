@@ -28,7 +28,7 @@
         ng-style="{'position':'absolute','top':setPagePositionTop(board.indexOf(row), $index), 'left':setPagePosition($index, board.indexOf(row)) }" 
         ng-class="{boxShape: cell}" >       
         	<div 
-        	ng-drag="cell=='O'&& isYourTurn || cell=='X'&& isYourTurn"
+        	ng-drag="cell=='O'&& isYourTurn && turnIndex==0 || cell=='X'&& isYourTurn && turnIndex==1"
         	ng-drag-success="onStartCallback($event,$parent.$index, $index)"
         	ng-class="{'checkerShapeO': cell=='O', 'checkerShapeX': cell=='X', 
         	boxGreen: selectedPosition[0][0]==board.indexOf(row) && selectedPosition[0][1]==$index , 
