@@ -1,5 +1,11 @@
 body {
   background: #FCFAF2;
+  margin: 0;
+  padding: 0;
+  width: 625px;
+  height: 625px;
+  overflow: hidden;
+  position: fixed!important;
 }
 
 .boxShape {
