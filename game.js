@@ -75,6 +75,8 @@ angular.module('myApp',['ngTouch','ngDraggable'])
       
       if(params.yourPlayerIndex === -2 ){
       	//do nothing when initial state holds
+      }else if(params.yourPlayerIndex === -1){
+      	//do nothing when end of game
       }else if(!$scope.isYourTurn && params.playersInfo[params.yourPlayerIndex].playerId !== ''){
       	//setAll(params.move);  // show opponent's movement
       }
