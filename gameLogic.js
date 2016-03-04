@@ -42,34 +42,34 @@ function isEqual(object1, object2) {
     return JSON.stringify(object1) === JSON.stringify(object2);
   }
 */
-
-function checkPosition(row,col,board){
-	if(board[row][col] === '' || board[row][col] === undefined){
+	/* given a position <row, col>, check as if the position is located inside the chessboard.*/
+	function checkPosition(row,col,board){
+		if(board[row][col] === '' || board[row][col] === undefined){
 			console.log("The position of row: " + row + "and col: " + col + "has been outside of the board!");
 			return false;
 		}else{
 			return true;
 		}
-}
-
-
-function isOneStepMove(oldrow,oldcol,row,col){
-	if( (Math.abs(oldrow-row)+Math.abs(oldcol-col))==1 ){
-		console.log("move is one step around location");
-		chain_1 = {set: {key: 'isChain', value: false}};
-		chain_2 = {set: {key:'chainValue',value: [[oldrow,oldcol],[row,col]]}};
-		return true;
 	}
-	else if( (row==oldrow+1 && col==oldcol+1) || (row==oldrow-1 && col==oldcol-1) ){
-		console.log("move is one step around location");
-		chain_1 = {set: {key: 'isChain', value: false}};
-		chain_2 = {set: {key:'chainValue',value: [[oldrow,oldcol],[row,col]]}};
-		return true;
-	}else{
-		console.log("move takes more steps around location");
-		return false;
+
+	/*given original position and current position, check as if a chess piece moves more than one step in a hexgonal board*/
+	function isOneStepMove(oldrow,oldcol,row,col){
+		if( (Math.abs(oldrow-row)+Math.abs(oldcol-col))==1 ){
+			console.log("move is one step around location");
+			chain_1 = {set: {key: 'isChain', value: false}};
+			chain_2 = {set: {key:'chainValue',value: [[oldrow,oldcol],[row,col]]}};
+			return true;
+		}
+		else if( (row==oldrow+1 && col==oldcol+1) || (row==oldrow-1 && col==oldcol-1) ){
+			console.log("move is one step around location");
+			chain_1 = {set: {key: 'isChain', value: false}};
+			chain_2 = {set: {key:'chainValue',value: [[oldrow,oldcol],[row,col]]}};
+			return true;
+		}else{
+			console.log("move takes more steps around location");
+			return false;
+		}
 	}
-}
 
 
 function Jump(row,col,board) {
