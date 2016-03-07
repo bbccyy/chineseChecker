@@ -52,7 +52,7 @@ function isEqual(object1, object2) {
 		}
 	}
 
-	/*given original position and current position, check as if a chess piece moves more than one step in a hexgonal board*/
+	/*given original position and current position, check as if a chess piece moves more than one step in a hexagonal board*/
 	function isOneStepMove(oldrow,oldcol,row,col){
 		if( (Math.abs(oldrow-row)+Math.abs(oldcol-col))==1 ){
 			console.log("move is one step around location");
@@ -71,115 +71,116 @@ function isEqual(object1, object2) {
 		}
 	}
 
-
-function Jump(row,col,board) {
-	var pointPool = new Array();
-	var i = 0;
-	if(board[row][col+1] != '' && board[row][col+1] != 'a'){
-		if(board[row][col+2] == 'a'){
-			pointPool[i] = [row,col+2];
-			i+=1;
-		}
-	}
-	if(board[row+1][col+1] != '' && board[row+1][col+1] != 'a'){
-		if(board[row+2][col+2] == 'a'){
-			pointPool[i] = [row+2,col+2];
-			i+=1;
-		}
-	}
-	if(board[row+1][col] != '' && board[row+1][col] != 'a'){
-		if(board[row+2][col] == 'a'){
-			pointPool[i] = [row+2,col];
-			i+=1;
-		}
-	}
-	if(board[row][col-1] != '' && board[row][col-1] != 'a'){
-		if(board[row][col-2] == 'a'){
-			pointPool[i] = [row,col-2];
-			i+=1;
-		}
-	}
-	if(board[row-1][col-1] != '' && board[row-1][col-1] != 'a'){
-		if(board[row-2][col-2] == 'a'){
-			pointPool[i] = [row-2,col-2];
-			i+=1;
-		}
-	}
-	if(board[row-1][col] != '' && board[row-1][col] != 'a'){
-		if(board[row-2][col] == 'a'){
-			pointPool[i] = [row-2,col];
-		}
-	}
-	return pointPool;
-}
-
-
-function isContain(arr,value) {
-	for(var i=0; i<arr.length; i++){
-		if(arr[i][0] == value[0] && arr[i][1] == value[1]){
-			return true;
-		}
-	}
-	return false;
-}
-
-// the new version of isMultiStepMoves now can trace 
-// the movements of each step within this multi-jump
-// make sure the history logs jump always with steps
-// greater or equal to two.
-function isMultiStepMoves(oldrow,oldcol,row,col,boardBeforeMove){
-	var key = true;
-	var _row;
-	var _col;
-	var tempPool;
-	var historyPoint;
-	var pointPool = new Array();
-	pointPool[0] = [oldrow,oldcol,true,[[oldrow,oldcol]]];
-	while(true){
-	 	key = false;
-		for(var i=0; i<pointPool.length; i++){
-			if(pointPool[i][2] == true){
-				_row = pointPool[i][0];
-				_col = pointPool[i][1];
-				historyPoint = pointPool[i][3];
-				pointPool[i][2] = false;
-				key = true;
-				break;
+	/* given a location <row, col>, find all possible 'ending position' after ONE jump 
+	return all possibles as an array 'pointPool' */
+	function Jump(row,col,board) {
+		var pointPool = new Array();
+		var i = 0;
+		if(board[row][col+1] != '' && board[row][col+1] != 'a'){
+			if(board[row][col+2] == 'a'){
+				pointPool[i] = [row,col+2];
+				i+=1;
 			}
 		}
-		if(key == false){
-			//do something before break
-			break;
-		}
-		tempPool = Jump(_row,_col,boardBeforeMove);
-		if(tempPool.length == 0){
-			continue;
-		}
-		for(var j=0; j<tempPool.length; j++){
-			if(isContain(pointPool,tempPool[j])==true){
-				continue;
+		if(board[row+1][col+1] != '' && board[row+1][col+1] != 'a'){
+			if(board[row+2][col+2] == 'a'){
+				pointPool[i] = [row+2,col+2];
+				i+=1;
 			}
-			historyPoint.push([tempPool[j][0],tempPool[j][1]]);
-			var tempHistory = JSON.parse(JSON.stringify(historyPoint));
-			pointPool[pointPool.length] = [tempPool[j][0],tempPool[j][1],true,tempHistory];
-			if(tempPool[j][0]==row && tempPool[j][1]==col){
-				console.log(historyPoint);
-				if(historyPoint.length===2){
-					chain_1 = {set: {key: 'isChain', value: false}};
-					chain_2 = {set: {key:'chainValue',value: historyPoint}};
-				}else{
-					chain_1 = {set: {key: 'isChain', value: true}};
-					chain_2 = {set: {key:'chainValue',value: historyPoint}};
-				}
+		}
+		if(board[row+1][col] != '' && board[row+1][col] != 'a'){
+			if(board[row+2][col] == 'a'){
+				pointPool[i] = [row+2,col];
+				i+=1;
+			}
+		}
+		if(board[row][col-1] != '' && board[row][col-1] != 'a'){
+			if(board[row][col-2] == 'a'){
+				pointPool[i] = [row,col-2];
+				i+=1;
+			}
+		}
+		if(board[row-1][col-1] != '' && board[row-1][col-1] != 'a'){
+			if(board[row-2][col-2] == 'a'){
+				pointPool[i] = [row-2,col-2];
+				i+=1;
+			}
+		}
+		if(board[row-1][col] != '' && board[row-1][col] != 'a'){
+			if(board[row-2][col] == 'a'){
+				pointPool[i] = [row-2,col];
+			}
+		}
+		return pointPool;
+	}
+
+	/*arr is m by 2 matrix, value is 1 by 2 array, return if matrix contains array contents*/
+	function isContain(arr,value) {
+		for(var i=0; i<arr.length; i++){
+			if(arr[i][0] == value[0] && arr[i][1] == value[1]){
 				return true;
 			}
-			historyPoint.pop();
 		}
+		return false;
 	}
-	chain_1 = {};
-	chain_2 = {};
-	return false;	
-}
+
+	/* the new version of isMultiStepMoves now can trace */
+	/* the movements of each step within this multi-jump */
+	/* make sure the history logs jump always with steps */
+	/* greater or equal to two.			     */
+	function isMultiStepMoves(oldrow,oldcol,row,col,boardBeforeMove){
+		var key = true;
+		var _row;
+		var _col;
+		var tempPool;
+		var historyPoint;
+		var pointPool = new Array();
+		pointPool[0] = [oldrow,oldcol,true,[[oldrow,oldcol]]];
+		while(true){
+		 	key = false;
+			for(var i=0; i<pointPool.length; i++){
+				if(pointPool[i][2] == true){
+					_row = pointPool[i][0];
+					_col = pointPool[i][1];
+					historyPoint = pointPool[i][3];
+					pointPool[i][2] = false;
+					key = true;
+					break;
+				}
+			}
+			if(key == false){
+				//do something before break
+				break;
+			}
+			tempPool = Jump(_row,_col,boardBeforeMove);
+			if(tempPool.length == 0){
+				continue;
+			}
+			for(var j=0; j<tempPool.length; j++){
+				if(isContain(pointPool,tempPool[j])==true){
+					continue;
+				}
+				historyPoint.push([tempPool[j][0],tempPool[j][1]]);
+				var tempHistory = JSON.parse(JSON.stringify(historyPoint));
+				pointPool[pointPool.length] = [tempPool[j][0],tempPool[j][1],true,tempHistory];
+				if(tempPool[j][0]==row && tempPool[j][1]==col){
+					console.log(historyPoint);
+					if(historyPoint.length===2){
+						chain_1 = {set: {key: 'isChain', value: false}};
+						chain_2 = {set: {key:'chainValue',value: historyPoint}};
+					}else{
+						chain_1 = {set: {key: 'isChain', value: true}};
+						chain_2 = {set: {key:'chainValue',value: historyPoint}};
+					}
+					return true;
+				}
+				historyPoint.pop();
+			}
+		}
+		chain_1 = {};
+		chain_2 = {};
+		return false;	
+	}
 
 
 function createMove(oldrow,oldcol,row,col,turnIndexBeforeMove,boardBeforeMove){ 
